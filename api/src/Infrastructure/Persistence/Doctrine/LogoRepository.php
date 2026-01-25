@@ -6,11 +6,21 @@ use App\Domain\Logo\Entity\Logo;
 use App\Domain\Logo\Repository\LogoRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class LogoRepository implements LogoRepositoryInterface
+final class LogoRepository implements LogoRepositoryInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager
     ) {}
+
+    /**
+     * @return Logo[]
+     */
+    public function findAll(): array
+    {
+        return $this->entityManager
+            ->getRepository(Logo::class)
+            ->findAll();
+    }
 
     public function save(Logo $logo): void
     {

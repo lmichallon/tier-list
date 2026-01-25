@@ -34,6 +34,7 @@ export default function TierListPage() {
     const {
         tiers,
         activeLogo,
+        loading: tierListLoading,
         handleDragStart,
         handleDragEnd,
     } = useTierList();
@@ -111,7 +112,7 @@ export default function TierListPage() {
         }
     }, [accessToken, isLoading, router]);
 
-    if (isLoading || !accessToken) {
+    if (isLoading || tierListLoading || !accessToken) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
