@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Providers } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,19 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {children}
-
-            <footer className="bg-gray-900 text-gray-300 text-sm">
-                <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-center">
-                    <span>
-                      © {new Date().getFullYear()} – Projet Clean Architecture
-                    </span>
-
-                    <span className="text-gray-400">
-                        M2 IW ESGI LYON : MICHALLON Lisa - LAI YIO LAI TONG Maxime - CAUVET Louis
-                    </span>
-                </div>
-            </footer>
+        <Providers>{children}</Providers>
         </body>
     </html>
   );

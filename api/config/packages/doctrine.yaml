@@ -41,6 +41,18 @@ doctrine:
                 dir: "%kernel.project_dir%/src/Domain/Logo/Entity"
                 prefix: 'App\Domain\Logo\Entity'
                 alias: LogoDomain
+            UserDomain:
+                type: attribute
+                is_bundle: false
+                dir: "%kernel.project_dir%/src/Domain/User/Entity"
+                prefix: 'App\Domain\User\Entity'
+                alias: UserDomain
+            AuthDomain:
+                type: attribute
+                is_bundle: false
+                dir: "%kernel.project_dir%/src/Domain/Auth/Entity"
+                prefix: 'App\Domain\Auth\Entity'
+                alias: AuthDomain
         controller_resolver:
             auto_mapping: false
 

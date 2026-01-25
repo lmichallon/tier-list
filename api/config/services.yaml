@@ -24,6 +24,21 @@ services:
     App\Domain\Logo\Repository\LogoRepositoryInterface:
         alias: App\Infrastructure\Persistence\Doctrine\LogoRepository
 
+    App\Domain\User\Repository\UserRepositoryInterface:
+        alias: App\Infrastructure\Persistence\Doctrine\UserRepository
+
+    App\Domain\Auth\Repository\RefreshTokenRepositoryInterface:
+        alias: App\Infrastructure\Persistence\Doctrine\RefreshTokenRepository
+
+    App\Application\Security\PasswordHasherInterface:
+        alias: App\Infrastructure\Security\SymfonyPasswordHasher
+
+    App\Application\Security\TokenManagerInterface:
+        alias: App\Infrastructure\Security\JwtTokenManager
+
+    App\Application\Security\RefreshTokenGeneratorInterface:
+        alias: App\Infrastructure\Security\RefreshTokenGenerator
+
     App\Interface\Api\Processor\:
         resource: "../src/Interface/Api/Processor/"
         autowire: true

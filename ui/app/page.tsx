@@ -2,15 +2,21 @@
 
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { useTierList } from '@/src/application/useTierList';
+import { useAuth } from '@/src/application/useAuth';
 import { TierSection } from '@/src/components/TierSection';
+import { Footer } from '@/src/components/Footer';
+import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Download, LogOut, Trophy, Loader2 } from 'lucide-react';
 
 const TIERS = [
-    { key: 'S', label: "S : Les chefs-d'œuvre du branding", bg: 'bg-red-200' },
-    { key: 'A', label: 'A : Très bons logos', bg: 'bg-yellow-200' },
-    { key: 'B', label: 'B : Ça passe', bg: 'bg-green-200' },
-    { key: 'C', label: 'C : Médiocres', bg: 'bg-blue-200' },
-    { key: 'D', label: 'D : Les flops visuels', bg: 'bg-gray-200' },
+    { key: 'S', label: "Les chefs-d'oeuvre du branding", letter: 'S', bgColor: 'bg-red-400' },
+    { key: 'A', label: 'Très bons logos', letter: 'A', bgColor: 'bg-orange-400' },
+    { key: 'B', label: 'Ça passe', letter: 'B', bgColor: 'bg-yellow-400' },
+    { key: 'C', label: 'Médiocres', letter: 'C', bgColor: 'bg-green-400' },
+    { key: 'D', label: 'Les flops visuels', letter: 'D', bgColor: 'bg-blue-400' },
 ];
 
 export default function TierListPage() {
@@ -20,59 +26,116 @@ export default function TierListPage() {
         handleDragStart,
         handleDragEnd,
     } = useTierList();
+    const { accessToken, isLoading, logout } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isLoading && !accessToken) {
+            router.replace('/login');
+        }
+    }, [accessToken, isLoading, router]);
+
+    if (isLoading || !accessToken) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                    <p className="text-muted-foreground">Chargement...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <main className="max-w-5xl mx-auto px-4 py-6">
-            {/* Title */}
-            <h1 className="text-2xl font-bold text-center mb-10">
-                Mon incroyable Tierlist de logos
-            </h1>
-
-            {/* Actions */}
-            <div className="flex flex-col sm:flex-row justify-end gap-3 mb-6">
-                <button className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md cursor-pointer">
-                    Télécharger les résultats globaux
-                </button>
-            </div>
-
-            <DndContext
-                onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-            >
-                {/* Unranked */}
-                <TierSection
-                    tierKey="unranked"
-                    label="Logos non classés"
-                    bg="bg-gray-50 border border-dashed border-gray-300"
-                    logos={tiers.unranked}
-                />
-
-                {/* Tiers */}
-                {TIERS.map((tier) => (
-                    <TierSection
-                        key={tier.key}
-                        tierKey={tier.key as any}
-                        label={tier.label}
-                        bg={tier.bg}
-                        logos={tiers[tier.key as keyof typeof tiers]}
-                    />
-                ))}
-
-                {/* Drag overlay */}
-                <DragOverlay>
-                    {activeLogo ? (
-                        <div className="pointer-events-none">
-                            <Image
-                                src={activeLogo.imageUrl}
-                                alt={activeLogo.name}
-                                width={80}
-                                height={80}
-                                className="shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md"
-                            />
+        <div className="min-h-screen bg-background">
+            {/* Header */}
+            <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16">
+                        {/* Logo */}
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-foreground flex items-center justify-center">
+                                <Trophy className="h-5 w-5 text-background" />
+                            </div>
+                            <span className="text-xl font-bold tracking-tight">Téel</span>
                         </div>
-                    ) : null}
-                </DragOverlay>
-            </DndContext>
-        </main>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-3">
+                            <Button variant="outline" className="gap-2 bg-transparent">
+                                <Download className="h-4 w-4" />
+                                <span className="hidden sm:inline">Télécharger les résultats</span>
+                            </Button>
+                            <Button variant="ghost" onClick={logout} className="gap-2">
+                                <LogOut className="h-4 w-4" />
+                                <span className="hidden sm:inline">Déconnexion</span>
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            {/* Main Content */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Page Title */}
+                <div className="text-center mb-10">
+                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-balance">
+                        Mon incroyable Tierlist de logos
+                    </h1>
+                    <p className="mt-2 text-muted-foreground">
+                        Glissez et déposez les logos pour créer votre classement
+                    </p>
+                </div>
+
+                <DndContext
+                    onDragStart={handleDragStart}
+                    onDragEnd={handleDragEnd}
+                >
+                    {/* Unranked Logos */}
+                    <div className="mb-8">
+                        <TierSection
+                            tierKey="unranked"
+                            label="Logos non classés"
+                            tierLetter=""
+                            bgColor=""
+                            logos={tiers.unranked}
+                        />
+                    </div>
+
+                    {/* Tier List */}
+                    <div className="space-y-3">
+                        {TIERS.map((tier) => (
+                            <TierSection
+                                key={tier.key}
+                                tierKey={tier.key as any}
+                                label={tier.label}
+                                tierLetter={tier.letter}
+                                bgColor={tier.bgColor}
+                                logos={tiers[tier.key as keyof typeof tiers]}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Drag Overlay */}
+                    <DragOverlay>
+                        {activeLogo ? (
+                            <div className="pointer-events-none">
+                                <div className="rounded-xl bg-card border-2 border-foreground shadow-2xl p-2 scale-110">
+                                    <Image
+                                        src={activeLogo.imageUrl || "/placeholder.svg"}
+                                        alt={activeLogo.name}
+                                        width={80}
+                                        height={80}
+                                        className="object-contain"
+                                    />
+                                </div>
+                            </div>
+                        ) : null}
+                    </DragOverlay>
+                </DndContext>
+            </main>
+
+            <Footer />
+        </div>
     );
 }
