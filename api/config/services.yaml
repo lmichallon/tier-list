@@ -39,6 +39,9 @@ services:
     App\Application\Security\RefreshTokenGeneratorInterface:
         alias: App\Infrastructure\Security\RefreshTokenGenerator
 
+    App\Application\Pdf\PdfGeneratorInterface:
+        alias: App\Infrastructure\Pdf\DompdfGenerator
+
     App\Interface\Api\Processor\:
         resource: "../src/Interface/Api/Processor/"
         autowire: true

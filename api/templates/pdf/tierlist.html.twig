@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>{{ snapshot.title }}</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #0f172a;
+            background: #ffffff;
+        }
+        .page {
+            width: 100%;
+            padding: 24px;
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 0 4px 0;
+        }
+        .player-date {
+            font-size: 12px;
+            color: #64748b;
+        }
+        .tiers {
+            width: 100%;
+        }
+        .tier {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .tier.unranked {
+            border-style: dashed;
+            background: #f8fafc;
+        }
+        .tier-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .tier-letter {
+            width: 72px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            vertical-align: middle;
+        }
+        .tier-content {
+            padding: 12px 16px;
+        }
+        .tier-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 10px;
+        }
+        .logo-grid {
+            min-height: 64px;
+        }
+        .logo-card {
+            width: 64px;
+            height: 64px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 6px;
+            display: inline-block;
+            vertical-align: top;
+            margin: 0 8px 8px 0;
+            background: #ffffff;
+            text-align: center;
+            line-height: 52px;
+        }
+        .logo-card img {
+            max-width: 100%;
+            max-height: 100%;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="header">
+            <h1 class="title">{{ snapshot.title }}</h1>
+            <div class="player-date">Date joueur: {{ snapshot.playerDate }}</div>
+        </header>
+
+        <section class="tiers">
+            {% for tier in snapshot.tiers %}
+                <div class="tier{% if tier.letter is empty %} unranked{% endif %}">
+                    <table class="tier-table">
+                        <tr>
+                            {% if tier.letter is not empty %}
+                                <td class="tier-letter" style="background: {{ tier.color }};">
+                                    {{ tier.letter }}
+                                </td>
+                            {% endif %}
+                            <td class="tier-content">
+                                <div class="tier-label">{{ tier.label }}</div>
+                                <div class="logo-grid">
+                                    {% for logo in tier.logos %}
+                                        <div class="logo-card">
+                                            <img src="{{ logo.imageUrl }}" alt="{{ logo.name }}">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            {% endfor %}
+        </section>
+    </div>
+</body>
+</html>

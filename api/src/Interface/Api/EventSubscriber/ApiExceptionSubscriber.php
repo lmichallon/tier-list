@@ -8,6 +8,7 @@ use App\Domain\User\Exception\UserAlreadyExistsException;
 use App\Domain\User\Exception\InvalidCredentialsException;
 use App\Domain\Auth\Exception\InvalidRefreshTokenException;
 use App\Domain\Auth\Exception\InvalidTokenException;
+use App\Domain\TierList\Exception\PdfGenerationFailedException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,6 +42,9 @@ final class ApiExceptionSubscriber implements EventSubscriberInterface
 
             $e instanceof InvalidTokenException =>
             $event->setResponse(new JsonResponse(null, 401)),
+
+            $e instanceof PdfGenerationFailedException =>
+            $event->setResponse(new JsonResponse(null, 500)),
 
             default => null
         };

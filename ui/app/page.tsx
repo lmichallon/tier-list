@@ -2,22 +2,33 @@
 
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import { useTierList } from '@/src/application/useTierList';
-import { useAuth } from '@/src/application/useAuth';
+import { API_BASE_URL, useAuth } from '@/src/application/useAuth';
 import { TierSection } from '@/src/components/TierSection';
 import { Footer } from '@/src/components/Footer';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Download, LogOut, Trophy, Loader2 } from 'lucide-react';
 
 const TIERS = [
-    { key: 'S', label: "Les chefs-d'oeuvre du branding", letter: 'S', bgColor: 'bg-red-400' },
-    { key: 'A', label: 'Très bons logos', letter: 'A', bgColor: 'bg-orange-400' },
-    { key: 'B', label: 'Ça passe', letter: 'B', bgColor: 'bg-yellow-400' },
-    { key: 'C', label: 'Médiocres', letter: 'C', bgColor: 'bg-green-400' },
-    { key: 'D', label: 'Les flops visuels', letter: 'D', bgColor: 'bg-blue-400' },
+    { key: 'S', label: "Les chefs-d'oeuvre du branding", letter: 'S', bgColor: 'bg-red-400', pdfColor: '#f87171' },
+    { key: 'A', label: 'Très bons logos', letter: 'A', bgColor: 'bg-orange-400', pdfColor: '#fb923c' },
+    { key: 'B', label: 'Ça passe', letter: 'B', bgColor: 'bg-yellow-400', pdfColor: '#facc15' },
+    { key: 'C', label: 'Médiocres', letter: 'C', bgColor: 'bg-green-400', pdfColor: '#4ade80' },
+    { key: 'D', label: 'Les flops visuels', letter: 'D', bgColor: 'bg-blue-400', pdfColor: '#60a5fa' },
 ];
+
+function getFilename(contentDisposition: string | null): string | null {
+    if (!contentDisposition) return null;
+
+    const match = /filename=\"([^\"]+)\"/.exec(contentDisposition);
+    if (match && match[1]) {
+        return match[1];
+    }
+
+    return null;
+}
 
 export default function TierListPage() {
     const {
@@ -28,6 +39,71 @@ export default function TierListPage() {
     } = useTierList();
     const { accessToken, isLoading, logout } = useAuth();
     const router = useRouter();
+    const [isDownloading, setIsDownloading] = useState(false);
+
+    const handleDownload = async () => {
+        if (!accessToken || isDownloading) return;
+
+        const snapshot = {
+            title: 'Mon incroyable Tierlist de logos',
+            playerDate: new Date().toLocaleDateString('fr-FR'),
+            tiers: [
+                {
+                    key: 'unranked',
+                    label: 'Logos non classés',
+                    letter: '',
+                    color: '#e2e8f0',
+                    logos: tiers.unranked.map((logo) => ({
+                        id: logo.id,
+                        name: logo.name,
+                        imageUrl: logo.imageUrl,
+                    })),
+                },
+                ...TIERS.map((tier) => ({
+                    key: tier.key,
+                    label: tier.label,
+                    letter: tier.letter,
+                    color: tier.pdfColor,
+                    logos: tiers[tier.key as keyof typeof tiers].map((logo) => ({
+                        id: logo.id,
+                        name: logo.name,
+                        imageUrl: logo.imageUrl,
+                    })),
+                })),
+            ],
+        };
+
+        setIsDownloading(true);
+        try {
+            const response = await fetch(`${API_BASE_URL}/tierlists/pdf`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                credentials: 'include',
+                body: JSON.stringify(snapshot),
+            });
+
+            if (!response.ok) {
+                throw new Error('PDF generation failed.');
+            }
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const filename = getFilename(response.headers.get('Content-Disposition')) ?? 'tierlist.pdf';
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsDownloading(false);
+        }
+    };
 
     useEffect(() => {
         if (!isLoading && !accessToken) {
@@ -62,8 +138,17 @@ export default function TierListPage() {
 
                         {/* Actions */}
                         <div className="flex items-center gap-3">
-                            <Button variant="outline" className="gap-2 bg-transparent">
-                                <Download className="h-4 w-4" />
+                            <Button
+                                variant="outline"
+                                className="gap-2 bg-transparent"
+                                onClick={handleDownload}
+                                disabled={isDownloading}
+                            >
+                                {isDownloading ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Download className="h-4 w-4" />
+                                )}
                                 <span className="hidden sm:inline">Télécharger les résultats</span>
                             </Button>
                             <Button variant="ghost" onClick={logout} className="gap-2">
