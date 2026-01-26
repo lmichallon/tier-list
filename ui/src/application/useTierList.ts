@@ -42,11 +42,11 @@ export function useTierList() {
 
                 const data = await response.json();
 
-                if (!Array.isArray(data)) {
+                if (!Array.isArray(data.member)) {
                     throw new Error('Invalid logos payload');
                 }
 
-                const logos: Logo[] = data.map((logo) => ({
+                const logos: Logo[] = data.member.map((logo: any) => ({
                     id: logo.id,
                     name: logo.company,
                     imageUrl: logo.imageURL,
