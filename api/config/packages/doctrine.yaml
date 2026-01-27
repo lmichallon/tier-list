@@ -1,7 +1,7 @@
 doctrine:
     dbal:
         url: "%env(resolve:DATABASE_URL)%"
-        schema_filter: '~^(?!auth\.|storage\.|realtime\.|extensions\.)~'
+        schema_filter: ~^(?!graphql|auth|storage|realtime|vault|extensions|pgbouncer)~
         default_table_options:
             schema: public
         mapping_types:
@@ -53,6 +53,12 @@ doctrine:
                 dir: "%kernel.project_dir%/src/Domain/Auth/Entity"
                 prefix: 'App\Domain\Auth\Entity'
                 alias: AuthDomain
+            TierListInfrastructure:
+                type: attribute
+                is_bundle: false
+                dir: "%kernel.project_dir%/src/Infrastructure/Persistence/Doctrine/Entity"
+                prefix: 'App\Infrastructure\Persistence\Doctrine\Entity'
+                alias: TierListInfrastructure
         controller_resolver:
             auto_mapping: false
 

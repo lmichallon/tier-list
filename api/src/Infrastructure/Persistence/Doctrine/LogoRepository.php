@@ -12,6 +12,19 @@ final class LogoRepository implements LogoRepositoryInterface
         private EntityManagerInterface $entityManager
     ) {}
 
+    public function find(string $id): Logo
+    {
+        $logo = $this->entityManager
+            ->getRepository(Logo::class)
+            ->find($id);
+
+        if (!$logo) {
+            throw new \RuntimeException(sprintf('Logo %s not found', $id));
+        }
+
+        return $logo;
+    }
+
     /**
      * @return Logo[]
      */

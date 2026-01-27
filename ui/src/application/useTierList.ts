@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import { TierKey, TierState, Logo } from '@/src/domain/tierlist';
+import { useAuth } from '@/src/application/useAuth';
 import { API_BASE_URL } from '@/src/application/useAuth';
 
 /**
@@ -27,6 +28,8 @@ export function useTierList() {
     const [activeLogo, setActiveLogo] = useState<Logo | null>(null);
 
     const [loading, setLoading] = useState(true);
+
+    const { accessToken } = useAuth();
 
     /** Charge les logos depuis l’API */
     useEffect(() => {
@@ -66,6 +69,28 @@ export function useTierList() {
         loadLogos();
     }, []);
 
+    async function persistMove(logoId: string, tier: TierKey) {
+        if (!accessToken) return;
+
+        try {
+            await fetch(`${API_BASE_URL}/tierlists/move`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    logoId,
+                    tier,
+                }),
+            });
+        } catch (error) {
+            console.error('Failed to persist move', error);
+        }
+    }
+
+
     // Déclenché au début du drag : mémorise le logo actif
     function handleDragStart(event: DragStartEvent) {
         setActiveLogo(event.active.data.current?.logo as Logo);
@@ -89,6 +114,8 @@ export function useTierList() {
             [from]: prev[from].filter((l) => l.id !== logo.id),
             [to]: [...prev[to], logo],
         }));
+
+        persistMove(logo.id, to);
     }
 
     // API exposée à la couche UI
