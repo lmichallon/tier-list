@@ -46,6 +46,11 @@ class TierListItemDoctrine
         return $this->tier;
     }
 
+    public function setTier(string $tier): void
+    {
+        $this->tier = $tier;
+    }
+
     public function tierList(): TierListDoctrine
     {
         return $this->tierList;

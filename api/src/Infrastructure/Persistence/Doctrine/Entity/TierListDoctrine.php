@@ -3,6 +3,7 @@
 
 namespace App\Infrastructure\Persistence\Doctrine\Entity;
 
+use App\Domain\Logo\Entity\Logo;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -59,5 +60,24 @@ class TierListDoctrine
         if ($this->items->removeElement($item)) {
             // orphanRemoval s’en charge
         }
+    }
+
+
+    public function addLogo(Logo $logo, string $tier): void
+    {
+        foreach ($this->items as $item) {
+            if ($item->logo()->getId() === $logo->getId()) {
+                $item->setTier($tier);
+                return;
+            }
+        }
+
+        $this->items->add(
+            new TierListItemDoctrine(
+                $this,
+                $logo,
+                $tier
+            )
+        );
     }
 }
