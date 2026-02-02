@@ -6,12 +6,9 @@ use App\Domain\Logo\Entity\Logo;
 
 interface LogoRepositoryInterface
 {
-
     public function find(string $id): Logo;
 
-    /**
-     * @return Logo[]
-     */
+    /** @return Logo[] */
     public function findAll(): array;
 
     public function save(Logo $logo): void;

@@ -3,10 +3,12 @@
 namespace App\Infrastructure\Persistence\Doctrine;
 
 use App\Domain\TierList\Entity\TierList;
+use App\Domain\TierList\Entity\TierListItem;
 use App\Domain\TierList\Repository\TierListRepositoryInterface;
 use App\Domain\TierList\ValueObject\Tier;
 use App\Domain\User\Entity\User;
 use App\Infrastructure\Persistence\Doctrine\Entity\TierListDoctrine;
+use App\Infrastructure\Persistence\Doctrine\Entity\TierListItemDoctrine;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class TierListRepository implements TierListRepositoryInterface
@@ -53,6 +55,23 @@ final class TierListRepository implements TierListRepositoryInterface
         }
 
         $this->entityManager->flush();
+    }
+
+    public function findAllItems(): array
+    {
+        $itemsDoctrine = $this->entityManager
+            ->getRepository(TierListItemDoctrine::class)
+            ->findAll();
+
+        $items = [];
+        foreach ($itemsDoctrine as $itemDoctrine) {
+            $items[] = new TierListItem(
+                $itemDoctrine->logo(),
+                Tier::from($itemDoctrine->tier())
+            );
+        }
+
+        return $items;
     }
 
     private function mapToDomain(TierListDoctrine $entity): TierList

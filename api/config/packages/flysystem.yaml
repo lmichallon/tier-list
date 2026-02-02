@@ -1,0 +1,8 @@
+# Read the documentation at https://github.com/thephpleague/flysystem-bundle/blob/master/docs/1-getting-started.md
+flysystem:
+    storages:
+        minio.storage:
+            adapter: "aws"
+            options:
+                client: "aws.client.minio"
+                bucket: "%env(MINIO_BUCKET)%"

@@ -6,5 +6,9 @@ use App\Domain\TierList\ValueObject\TierListSnapshot;
 
 interface PdfGeneratorInterface
 {
-    public function generateTierList(TierListSnapshot $snapshot): PdfDocument;
+
+    /**
+     * @param array<array{name: string, imageUrl: string, S: int, A: int, B: int, C: int, D: int, total: int}> $statistics
+     */
+    public function generateStatistics(array $statistics): PdfDocument;
 }

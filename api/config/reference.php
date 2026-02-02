@@ -1514,6 +1514,22 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         ...<mixed>
  *     },
  * }
+ * @psalm-type FlysystemConfig = array{
+ *     storages?: array<string, array{ // Default: []
+ *         adapter: scalar|null|Param,
+ *         options?: list<mixed>,
+ *         visibility?: scalar|null|Param, // Default: null
+ *         directory_visibility?: scalar|null|Param, // Default: null
+ *         retain_visibility?: bool|null|Param, // Default: null
+ *         case_sensitive?: bool|Param, // Default: true
+ *         disable_asserts?: bool|Param, // Default: false
+ *         public_url?: list<scalar|null|Param>,
+ *         path_normalizer?: scalar|null|Param, // Default: null
+ *         public_url_generator?: scalar|null|Param, // Default: null
+ *         temporary_url_generator?: scalar|null|Param, // Default: null
+ *         read_only?: bool|Param, // Default: false
+ *     }>,
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1525,6 +1541,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     security?: SecurityConfig,
  *     nelmio_cors?: NelmioCorsConfig,
  *     api_platform?: ApiPlatformConfig,
+ *     flysystem?: FlysystemConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1536,6 +1553,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         nelmio_cors?: NelmioCorsConfig,
  *         api_platform?: ApiPlatformConfig,
+ *         flysystem?: FlysystemConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1548,6 +1566,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         nelmio_cors?: NelmioCorsConfig,
  *         api_platform?: ApiPlatformConfig,
+ *         flysystem?: FlysystemConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -1560,6 +1579,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         security?: SecurityConfig,
  *         nelmio_cors?: NelmioCorsConfig,
  *         api_platform?: ApiPlatformConfig,
+ *         flysystem?: FlysystemConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,
@@ -1638,7 +1658,7 @@ namespace Symfony\Component\Routing\Loader\Configurator;
  * @psalm-type AliasConfig = array{
  *     alias: string,
  *     deprecated?: array{package:string, version:string, message?:string},
- * }
+ * }
  * @psalm-type RoutesConfig = array{
  *     "when@dev"?: array<string, RouteConfig|ImportConfig|AliasConfig>,
  *     "when@prod"?: array<string, RouteConfig|ImportConfig|AliasConfig>,

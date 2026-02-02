@@ -25,9 +25,7 @@ final class LogoRepository implements LogoRepositoryInterface
         return $logo;
     }
 
-    /**
-     * @return Logo[]
-     */
+    /** @return Logo[] */
     public function findAll(): array
     {
         return $this->entityManager
