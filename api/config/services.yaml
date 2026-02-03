@@ -64,6 +64,6 @@ services:
 
     App\Infrastructure\Storage\Minio\MinioPdfStorage:
         arguments:
-            $s3Client: '@aws.client.minio'
-            $bucket: '%env(MINIO_BUCKET)%'
-            $publicEndpoint: '%env(MINIO_PUBLIC_ENDPOINT)%'
+            $minioStorage: "@minio.storage"
+            $bucket: "%env(MINIO_BUCKET)%"
+            $publicEndpoint: "%env(MINIO_PUBLIC_ENDPOINT)%"
