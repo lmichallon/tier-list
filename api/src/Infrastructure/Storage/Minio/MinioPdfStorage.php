@@ -18,7 +18,7 @@ final class MinioPdfStorage implements PdfStorageInterface
         $this->minioStorage->write(
             $path,
             $content,
-            ['ContentType' => 'application/pdf']
+            ['ContentType' => 'application/pdf', 'visibility' => 'public']
         );
     }
 
