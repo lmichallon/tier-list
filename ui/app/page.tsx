@@ -141,7 +141,7 @@ export default function TierListPage() {
             <div className="flex items-center gap-3">
               <Button
                 variant="outline"
-                className="gap-2 bg-transparent"
+                className="gap-2 bg-transparent cursor-pointer"
                 onClick={handleDownload}
                 disabled={isDownloading}
               >
@@ -154,7 +154,7 @@ export default function TierListPage() {
                   Télécharger les statistiques
                 </span>
               </Button>
-              <Button variant="ghost" onClick={logout} className="gap-2">
+              <Button variant="ghost" onClick={logout} className="gap-2 cursor-pointer">
                 <LogOut className="h-4 w-4" />
                 <span className="hidden sm:inline">Déconnexion</span>
               </Button>
