@@ -28,6 +28,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $tierListAccessGranted = false;
+
     public function __construct(string $email, string $passwordHash, array $roles = ['ROLE_USER'])
     {
         $this->email = $email;
@@ -72,6 +75,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPasswordHash(string $passwordHash): void
     {
         $this->passwordHash = $passwordHash;
+    }
+
+    public function hasTierListAccess(): bool
+    {
+        return $this->tierListAccessGranted;
+    }
+
+    public function grantTierListAccess(): void
+    {
+        $this->tierListAccessGranted = true;
     }
 
     public function eraseCredentials(): void

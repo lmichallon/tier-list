@@ -3,6 +3,7 @@
 import { DndContext, DragOverlay } from "@dnd-kit/core";
 import { useTierList } from "@/src/application/useTierList";
 import { API_BASE_URL, useAuth } from "@/src/application/useAuth";
+import { usePayment } from "@/src/application/usePayment";
 import { TierSection } from "@/src/components/TierSection";
 import { Footer } from "@/src/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -58,8 +59,10 @@ export default function TierListPage() {
     handleDragEnd,
   } = useTierList();
   const { accessToken, isLoading, logout } = useAuth();
+  const { isPaid, loading: paymentLoading, startCheckout } = usePayment();
   const router = useRouter();
   const [isDownloading, setIsDownloading] = useState(false);
+  const canFillTierList = isPaid === true;
 
   const handleDownload = async () => {
     if (!accessToken || isDownloading) return;
@@ -112,7 +115,7 @@ export default function TierListPage() {
     }
   }, [accessToken, isLoading, router]);
 
-  if (isLoading || tierListLoading || !accessToken) {
+  if (isLoading || tierListLoading || paymentLoading || !accessToken) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -175,7 +178,24 @@ export default function TierListPage() {
           </p>
         </div>
 
-        <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        {!canFillTierList && (
+          <div className="mb-6 rounded-2xl border border-border bg-muted/40 p-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">Paiement requis</p>
+              <p className="text-sm text-muted-foreground">
+                Le remplissage de la tier list est débloqué après paiement.
+              </p>
+            </div>
+            <Button onClick={startCheckout} className="cursor-pointer">
+              Débloquer avec Stripe
+            </Button>
+          </div>
+        )}
+
+        <DndContext
+          onDragStart={canFillTierList ? handleDragStart : undefined}
+          onDragEnd={canFillTierList ? handleDragEnd : undefined}
+        >
           {/* Unranked Logos */}
           <div className="mb-8">
             <TierSection
@@ -184,6 +204,7 @@ export default function TierListPage() {
               tierLetter=""
               bgColor=""
               logos={tiers.unranked}
+              disabled={!canFillTierList}
             />
           </div>
 
@@ -197,6 +218,7 @@ export default function TierListPage() {
                 tierLetter={tier.letter}
                 bgColor={tier.bgColor}
                 logos={tiers[tier.key as keyof typeof tiers]}
+                disabled={!canFillTierList}
               />
             ))}
           </div>

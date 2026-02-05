@@ -8,7 +8,9 @@ use App\Domain\User\Exception\UserAlreadyExistsException;
 use App\Domain\User\Exception\InvalidCredentialsException;
 use App\Domain\Auth\Exception\InvalidRefreshTokenException;
 use App\Domain\Auth\Exception\InvalidTokenException;
+use App\Domain\Payment\Exception\StripeWebhookInvalidSignatureException;
 use App\Domain\TierList\Exception\PdfGenerationFailedException;
+use App\Domain\TierList\Exception\TierListPaymentRequiredException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,6 +47,12 @@ final class ApiExceptionSubscriber implements EventSubscriberInterface
 
             $e instanceof PdfGenerationFailedException =>
             $event->setResponse(new JsonResponse(null, 500)),
+
+            $e instanceof TierListPaymentRequiredException =>
+            $event->setResponse(new JsonResponse(null, 402)),
+
+            $e instanceof StripeWebhookInvalidSignatureException =>
+            $event->setResponse(new JsonResponse(null, 400)),
 
             default => null
         };
