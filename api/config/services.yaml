@@ -53,6 +53,9 @@ services:
     App\Application\Pdf\PdfGeneratorInterface:
         alias: App\Infrastructure\Pdf\DompdfGenerator
 
+    App\Application\Payment\StripeGatewayInterface:
+        alias: App\Infrastructure\Payment\StripeGateway
+
     App\Interface\Api\Processor\:
         resource: "../src/Interface/Api/Processor/"
         autowire: true

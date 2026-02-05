@@ -13,9 +13,10 @@ import Image from "next/image";
 type Props = {
     logo: Logo;
     tier: TierKey;
+    disabled?: boolean;
 };
 
-export function DraggableLogo({ logo, tier }: Props) {
+export function DraggableLogo({ logo, tier, disabled = false }: Props) {
     // Hook dnd-kit pour rendre l’élément draggable
     const {
         attributes,
@@ -26,6 +27,7 @@ export function DraggableLogo({ logo, tier }: Props) {
     } = useDraggable({
         id: logo.id,
         data: { tier, logo }, // permet d’identifier le tier source
+        disabled,
     });
 
     // Style dynamique appliqué pendant le drag
@@ -46,7 +48,7 @@ export function DraggableLogo({ logo, tier }: Props) {
                 alt={logo.name}
                 width={80}
                 height={80}
-                className="shadow-sm cursor-grab active:cursor-grabbing hover:shadow-md"
+                className={`shadow-sm hover:shadow-md ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-grab active:cursor-grabbing'}`}
                 title={logo.name}
             />
         </div>

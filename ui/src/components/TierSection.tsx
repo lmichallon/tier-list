@@ -13,9 +13,10 @@ type Props = {
     tierLetter: string;
     bgColor: string;
     logos: Logo[];
+    disabled?: boolean;
 };
 
-export function TierSection({ tierKey, label, tierLetter, bgColor, logos }: Props) {
+export function TierSection({ tierKey, label, tierLetter, bgColor, logos, disabled = false }: Props) {
     const { setNodeRef, isOver } = useDroppable({
         id: tierKey,
         data: { tier: tierKey },
@@ -84,6 +85,7 @@ export function TierSection({ tierKey, label, tierLetter, bgColor, logos }: Prop
                                     key={logo.id}
                                     logo={logo}
                                     tier={tierKey}
+                                    disabled={disabled}
                                 />
                             ))
                         )}
