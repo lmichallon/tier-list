@@ -14,4 +14,6 @@ Ce dossier présente les choix architecturaux et des exemples de code pour le pr
 - [07 – Frontend](./07-frontend-architecture.md)
 - [08 – DevOps & Infra](./08-devops-infra.md)
 - [09 – Tests & Qualité](./09-tests-qualite.md)
+- [11 – Stripe (paiement)](./11-stripe.md)
+- [12 – Swagger (doc API)](./12-swagger.md)
 - [10 – Conclusion](./10-conclusion.md)
