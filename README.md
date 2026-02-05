@@ -105,9 +105,21 @@ Spec OpenAPI : `http://localhost:8000/api/docs.jsonopenapi`
 
 ## Documentation projet
 
-Le dossier `docs/` contient le dossier d’architecture :
+Le dossier `docs/` contient le dossier d’architecture et son sommaire :
 
-```bash
-docs/README.md
-```
+- Accès rapide : `docs/README.md`
+- Ouverture directe : `docs/00-introduction.md` → `docs/10-conclusion.md`
 
+Sommaire (extrait) :
+- 00 – Introduction
+- 01 – Contexte & besoins
+- 02 – Choix d’architecture
+- 03 – Backend (Hexagonal)
+- 04 – Authentification
+- 05 – Gestion des logos
+- 06 – Génération PDF
+- 07 – Frontend
+- 08 – DevOps & Infra
+- 09 – Tests & Qualité
+- 11 – Stripe (paiement)
+- 12 – Swagger (doc API)
